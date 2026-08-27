@@ -57,7 +57,6 @@ GROUP BY preterm;
 -- =========================================================
 -- Section 4: Create singleton birth dataset
 -- =========================================================
-
 ---create singleton dataset
 CREATE TABLE births_singles AS
 SELECT *
@@ -69,11 +68,9 @@ SELECT DPLURAL, COUNT(*) AS plural_count
 FROM births_clean
 GROUP BY DPLURAL;
 
-
 -- =========================================================
 -- Section 5: Query performance 
 -- =========================================================
-
 ---Check query plan before creating index
 EXPLAIN QUERY PLAN 
 SELECT *
@@ -96,12 +93,9 @@ WHERE DPLURAL = 1;
 ---execution time was 14ms
 ---query plan changed, even though the reported time was still 14ms
 
-
-
 -- =========================================================
 -- Section 6: Explore outcome variable
 -- =========================================================
-
 ---check count of preterm in new table
 SELECT preterm, COUNT (*) as preterm_count
 FROM births_singles
@@ -148,7 +142,6 @@ GROUP BY PRECARE5;
 -- =========================================================
 -- Section 8: Explore continuous variables
 -- =========================================================
-
 ---check mager variable min/max
 SELECT MIN(MAGER) AS min_mag, MAX(MAGER) AS max_mag, AVG(MAGER) AS avg_mag
 FROM births_singles;
@@ -159,7 +152,6 @@ SELECT
 	SUM(CASE WHEN MAGER >=35 THEN 1 ELSE 0 END) AS age_35_plus
 FROM births_singles;
 
-
 ---check BMI variable min/max/avg
 SELECT MIN(BMI) AS min_bmi, MAX(BMI) AS max_bmi, AVG(BMI) AS avg_bmi
 FROM births_singles;
@@ -167,7 +159,6 @@ FROM births_singles;
 -- =========================================================
 -- Section 9: Explore BMI 
 -- =========================================================
-
 ---check BMI_R variable
 SELECT BMI_R, COUNT(*) AS bmi_r_count
 FROM births_singles
@@ -179,19 +170,16 @@ SELECT COUNT(*) AS bmi_over_40
 FROM births_singles
 WHERE BMI >= 40;
 
-
 ---check BMI and BMI_R to look at BMI code 99.9
 SELECT BMI, BMI_R, COUNT(*) AS bmi_count
 FROM births_singles
 WHERE BMI_R <> 6 AND BMI >= 40
 GROUP BY BMI, BMI_R;
----checking this means that I will use BMI_R for analysis instead
-
+---will use BMI_R for analysis instead
 
 -- =========================================================
 -- Section 10: Check missing/unknown values
 -- =========================================================
-
 ---check MRACESHIP
 SELECT MRACEHISP, COUNT(*) AS mrace
 FROM births_singles
@@ -206,7 +194,6 @@ GROUP BY MEDUC;
 SELECT FEDUC, COUNT(*)
 FROM births_singles
 WHERE FEDUC = NULL;
-
 
 ---check null values for remaining variables
 SELECT
