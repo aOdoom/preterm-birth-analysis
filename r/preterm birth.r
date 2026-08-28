@@ -1,6 +1,7 @@
 # =========================================================
 # Load packages
 # =========================================================
+  
 # Install packages
 if (!require("pacman")) install.packages("pacman")
 
@@ -15,7 +16,11 @@ pacman::p_load(
   forcats,
   gtsummary,
   dplyr,
-  speedglm
+  purrr,
+  car,
+  pROC,
+  speedglm,
+  magick
 )
 
 # =========================================================
@@ -54,6 +59,7 @@ table(analysis_data$PREVIS_REC)
 # =========================================================
 # Data 
 # =========================================================
+
 # Add new categorical column for age
 analysis_data <- analysis_data %>%
   mutate(
@@ -67,6 +73,7 @@ analysis_data <- analysis_data %>%
       MAGER >= 45 & MAGER <= 50 ~ "45-50 years"),
    levels = c("Under 20 years", "20-24 years", "25-29 years", "30-34 years", 
             "35-39 years", "40-44 years", "45-50 years")))
+
 # =========================================================
 #  Recode variables to factors
 # =========================================================
@@ -189,8 +196,39 @@ demograph <- analysis_data_complete %>%
 # view
 demograph
 
-# save table
-demograph %>% as_flex_table() %>% save_as_image(path = "Figures/table1_demographics.png")
+# =========================================================
+# Exploratory visualizations
+rate_plot <- function(data, var, title) {
+  data %>%
+    filter(.data[[var]] != "Unknown") %>%
+    group_by(.data[[var]]) %>%
+    summarize(rate = mean(preterm == "Preterm") * 100, .groups = "drop") %>%
+    ggplot(aes(x = .data[[var]], y = rate)) +
+    geom_col(fill = "#C0641E") +
+    geom_hline(yintercept = mean(data$preterm == "Preterm") * 100,
+               linetype = "dashed", color = "gray50") +
+    coord_flip() +
+    labs(title = title, x = NULL, y = "% Preterm") +
+    theme_minimal()
+}
+
+# Build plots
+meduc <- rate_plot(analysis_data_complete, "MEDUC", "Maternal Education")
+feduc <- rate_plot(analysis_data_complete, "FEDUC", "Paternal Education")
+visits  <- rate_plot(analysis_data_complete, "PREVIS_REC", "Prenatal Visits")
+age     <- rate_plot(analysis_data_complete, "MAGER", "Maternal Age")
+race    <- rate_plot(analysis_data_complete, "MRACEHISP", "Race/Ethnicity")
+care <- rate_plot(analysis_data_complete, "PRECARE5", "Month of Initial Prenatal Visit")
+
+# Combine
+(meduc + feduc) /
+  (visits + age) /
+  (race + care /plot_spacer()) +
+  plot_annotation(title = "Preterm Rate by Characteristic",
+                  theme = theme(plot.title = element_text(size = 14, face = "bold")))
+
+ggsave("Figures/preterm_rates_panel.png", width = 12, height = 12, dpi = 150)
+
 # =========================================================
 # Set reference levels
 analysis_data_complete <- analysis_data_complete %>%
@@ -224,7 +262,7 @@ meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
 feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
 care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
 
-# education only
+# model - education only
 edu_m <- run_logit("preterm", c("MEDUC", "FEDUC"), analysis_data_complete)
 
 # additional variables - age/race
@@ -233,10 +271,7 @@ adj_1 <- run_logit("preterm", c("MEDUC", "FEDUC", "MAGER", "MRACEHISP"), analysi
 # fully adjusted model
 preterm_adjusted_model <- run_logit("preterm", predictors, analysis_data_complete)
 
-# unadjusted/adjusted table 
-merged_table %>% as_flex_table() %>% save_as_image(path = "Figures/table2_merged.png")
-
-# create tables for gradual model building - education only
+# create tables for models above
 t1 <- tbl_regression(
   edu_m,
   exponentiate = TRUE,
@@ -245,7 +280,6 @@ t1 <- tbl_regression(
 ) %>%
   modify_header(estimate = "**OR**")
 
-# additional variables - age/race
 t2 <- tbl_regression(
   adj_1,
   exponentiate = TRUE,
@@ -254,7 +288,6 @@ t2 <- tbl_regression(
 ) %>%
   modify_header(estimate = "**OR**")
 
-# full model
 t3 <- tbl_regression(
   preterm_adjusted_model,
   exponentiate = TRUE,
@@ -269,9 +302,6 @@ seq_table <- tbl_merge(
   tab_spanner = c("**Model 1**", "**Model 2**", "**Model 3**")
 ) %>%
   modify_caption("**Table 3. Education Odds Ratios Across Sequential Models**")
-
-# save
-seq_table %>% as_flex_table() %>% save_as_image(path = "Figures/table2_sequential.png")
 # =========================================================
 # Model diagnostics
 # =========================================================
@@ -283,9 +313,19 @@ vif(preterm_adjusted_model)
 vif(adj_1)
 vif(edu_m)
 
-#sensitivity analysis
+# sensitivity analysis
 sens_model <- run_logit(
   "preterm",
   c("MAGER", "MRACEHISP", "MEDUC", "FEDUC", "PRECARE5"),
   analysis_data
 )
+# check odds ratios
+coef(sens_model) %>% exp()
+
+# save images
+for (f in c("table1_demographics.png", "table2_merged.png", "table3_sequential.png")) {
+  path <- file.path("Figures", f)
+  image_read(path) %>%
+    image_background("white", flatten = TRUE) %>%
+    image_write(path)
+}
