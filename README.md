@@ -56,4 +56,4 @@ SQL, R (dplyr, ggplot2, gtsummary, broom)
 
 ## Data Source
 
-National Vital Statistics System (NVSS) 2024 Natality public-use file, CDC/NCHS. The raw data file is large and not included in this repository. it can be downloaded from the CDC NVSS website: https://www.cdc.gov/nchs/nvss/births.htm
+National Vital Statistics System (NVSS) 2024 Natality public-use file, CDC/NCHS. The raw data file is large and not included in this repository. It can be downloaded from the CDC NVSS website: https://www.cdc.gov/nchs/nvss/births.htm
