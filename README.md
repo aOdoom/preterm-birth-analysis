@@ -30,6 +30,10 @@ The analytic sample included approximately 2.9 million singleton births. Table 1
 
 ![Table 1](images/table1_demographics.png)
 
+### Figure 1. Preterm Rate by Maternal and Paternal Education
+
+![Figure 1](images/preterm_rates_panel.png)
+
 ### Table 2. Unadjusted and Adjusted Odds Ratios for Preterm Birth
 
 ![Table 2](images/table2_merged.png)
