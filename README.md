@@ -2,17 +2,17 @@
 
 ## Introduction
 
-Preterm birth, defined as delivery before 37 weeks of gestation, is a leading cause of neonatal morbidity and mortality in the United States. Parental education is a known predictor of birth outcomes, but maternal education is studied far more than paternal education. This analysis compares how maternal and paternal education predict preterm birth, using 2024 national birth certificate data.
-
+Preterm birth, defined as delivery before 37 weeks of gestation, is a leading cause of infant morbidity and mortality in the United States. In 2022, preterm birth affected about 1 in 10 infants born in the United States, and racial and ethnic disparities persist—the rate among Black women was about 50% higher than among White or Hispanic women [1].
+ 
+Parental education is a well-established social determinant of birth outcomes, but research has focused overwhelmingly on maternal education, with paternal education rarely examined. Prior work suggests paternal education may be an important additional marker of risk for preterm birth, reflecting social and economic factors not captured by maternal education or family income [2]. However, findings on whether maternal and paternal education have differential effects remain mixed; one large birth cohort found maternal education more strongly associated with adverse outcomes than paternal, though both associations were weaker than previously reported [3]. This analysis compares how maternal and paternal education predict preterm birth in the United States, using 2024 national birth certificate data.
+ 
 **Research question:** How do maternal and paternal education compare as predictors of preterm birth, after adjusting for maternal age, race/ethnicity, and prenatal care?
 
 ## Methods
 
-Data came from the 2024 National Vital Statistics System (NVSS) natality file, restricted to singleton births. Preterm birth was defined as delivery before 37 weeks.
+Birth records were drawn from the 2024 National Vital Statistics System (NVSS) natality file and restricted to singleton births. The outcome was preterm birth, defined as delivery before 37 weeks of gestation. The primary exposures were maternal and paternal educational attainment, each ranging from eighth grade or less to a doctorate or professional degree, with high school graduate as the reference category. Maternal age, race/ethnicity, and month prenatal care began were included as covariates.
 
-Raw records were imported into SQL, where variables of interest were selected and filtered before export to R for analysis. The primary exposures were maternal and paternal education (8th grade or less through doctorate, with high school graduate as reference). Covariates were maternal age, race/ethnicity, and month prenatal care began.
-
-Unadjusted and adjusted logistic regression models estimated odds ratios with 95% confidence intervals. To assess how covariates influenced the education associations, models were built sequentially: education alone, adding age and race/ethnicity, and adding prenatal care. Multicollinearity between maternal and paternal education was assessed using variance inflation factors (VIF). Model fit was compared using the Akaike Information Criterion (AIC). Analyses used complete cases (N ≈ 2.9 million), while a sensitivity analysis retaining missing values as an "Unknown" category gave similar results. Data processing and analysis were performed in SQL and R.
+Data were prepared in SQL and analyzed in R. Associations between each predictor and preterm birth were estimated using logistic regression, reported as odds ratios with 95% confidence intervals. To evaluate the independent contribution of parental education, models were fit sequentially, beginning with education alone and adding demographic and prenatal care covariates in turn. Multicollinearity was evaluated using variance inflation factors, and model fit was compared using the Akaike Information Criterion. The primary analysis was restricted to complete cases (N ≈ 2.9 million); a sensitivity analysis retaining missing values produced consistent results.
 
 ## Results
 
@@ -57,3 +57,9 @@ SQL, R (dplyr, ggplot2, gtsummary, broom)
 ## Data Source
 
 National Vital Statistics System (NVSS) 2024 Natality public-use file, CDC/NCHS. The raw data file is large and not included in this repository. It can be downloaded from the CDC NVSS website: https://www.cdc.gov/nchs/nvss/births.htm
+
+## References
+ 
+1. Centers for Disease Control and Prevention. Preterm Birth. Maternal and Infant Health. https://www.cdc.gov/maternal-infant-health/preterm-birth/
+2. Shapiro GD, et al. Father's Education: An Independent Marker of Risk for Preterm Birth. *Maternal and Child Health Journal.* 2010.
+3. The influence of maternal and paternal education on birth outcomes: an analysis of the Ottawa and Kingston (OaK) birth cohort. *Journal of Maternal-Fetal & Neonatal Medicine.* 2022;35(25).
