@@ -20,7 +20,8 @@ pacman::p_load(
   car,
   pROC,
   speedglm,
-  magick
+  magick,
+  patchwork
 )
 
 # =========================================================
@@ -59,7 +60,6 @@ table(analysis_data$PREVIS_REC)
 # =========================================================
 # Data 
 # =========================================================
-
 # Add new categorical column for age
 analysis_data <- analysis_data %>%
   mutate(
@@ -162,7 +162,7 @@ analysis_data <- analysis_data %>%
         "Unknown")))
 
 # glimpse
-glimpse(analysis_data_complete)
+glimpse(analysis_data)
 
 # Check for missing or NA values
 print(analysis_data %>% 
@@ -178,24 +178,22 @@ analysis_data_complete <- analysis_data %>%
 demograph <- analysis_data_complete %>%
   tbl_summary(
     by = preterm,
-    type = list(c(RF_PDIAB, RF_GDIAB, RF_PHYPE, RF_GHYPE, CIG_REC) ~ "categorical"),
+    include = c(MAGER, BMI_R, MRACEHISP, MEDUC, FEDUC, PRECARE5),
     label = list(
       MAGER = "Maternal Age Category",
       BMI_R = "BMI Category",
       MRACEHISP = "Race/Ethnicity",
       MEDUC = "Maternal Education",
       FEDUC = "Paternal Education",
-      RF_PDIAB = "Pre-Pregnancy Diabetes",
-      RF_GDIAB = "Gestational Diabetes",
-      RF_PHYPE = "Pre-Pregnancy Hypertension",
-      RF_GHYPE = "Gestational Hypertension",
-      CIG_REC = "Smoking during Pregnancy",
-      PRECARE5 = "Month Prenatal Care Began",
-      PREVIS_REC = "Number of Prenatal Visits"))
+      PRECARE5 = "Month Prenatal Care Began"))
 
 # view
 demograph
 
+demograph %>%
+  as_flex_table() %>%
+  bg(bg = "white", part = "all") %>%
+  save_as_image(path = "Figures/table1_demographics.png")
 # =========================================================
 # Exploratory visualizations
 rate_plot <- function(data, var, title) {
@@ -223,7 +221,7 @@ care <- rate_plot(analysis_data_complete, "PRECARE5", "Month of Initial Prenatal
 # Combine
 (meduc + feduc) /
   (visits + age) /
-  (race + care /plot_spacer()) +
+  (race + care) +
   plot_annotation(title = "Preterm Rate by Characteristic",
                   theme = theme(plot.title = element_text(size = 14, face = "bold")))
 
@@ -256,13 +254,12 @@ run_logit <- function(outcome, predictors, data) {
 predictors <- c("MAGER", "MRACEHISP", "MEDUC", "FEDUC", "PRECARE5")
 
 # unadjusted models
-age_m <- run_logit("preterm", "MAGER", analysis_data_complete)
-race_m <- run_logit("preterm", "MRACEHISP", analysis_data_complete)
-meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
-feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
-care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
+# age_m <- run_logit("preterm", "MAGER", analysis_data_complete)
+# race_m <- run_logit("preterm", "MRACEHISP", analysis_data_complete)
+# meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
+# feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
+# care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
 
-# model - education only
 edu_m <- run_logit("preterm", c("MEDUC", "FEDUC"), analysis_data_complete)
 
 # additional variables - age/race
@@ -271,7 +268,7 @@ adj_1 <- run_logit("preterm", c("MEDUC", "FEDUC", "MAGER", "MRACEHISP"), analysi
 # fully adjusted model
 preterm_adjusted_model <- run_logit("preterm", predictors, analysis_data_complete)
 
-# create tables for models above
+# create tables
 t1 <- tbl_regression(
   edu_m,
   exponentiate = TRUE,
@@ -299,9 +296,53 @@ t3 <- tbl_regression(
 # full table
 seq_table <- tbl_merge(
   list(t1, t2, t3),
-  tab_spanner = c("**Model 1**", "**Model 2**", "**Model 3**")
+  tab_spanner = c("**Model 1: Education Only**", "**Model 2: +Race and Age**", "**Model 3: Fully Adjusted**")
 ) %>%
   modify_caption("**Table 3. Education Odds Ratios Across Sequential Models**")
+
+
+
+seq_table %>%
+  as_flex_table() %>%
+  bg(bg = "white", part = "all") %>%
+  save_as_image(path = "Figures/table3_sequential.png")
+
+
+# =========================================================
+# Forest Plot
+# =========================================================
+library(broom)
+library(dplyr)
+library(ggplot2)
+
+# Extract education terms
+edu_data <- tidy(preterm_adjusted_model, exponentiate = TRUE, conf.int = TRUE) %>%
+  filter(grepl("MEDUC|FEDUC", term)) %>%
+  mutate(
+    parent = ifelse(grepl("MEDUC", term), "Maternal", "Paternal"),
+    level = gsub("MEDUC|FEDUC", "", term)
+  )
+
+# Order levels
+edu_data$level <- factor(edu_data$level,
+                         levels = c("8th grade or less", "9-12th grade, no diploma",
+                                    "Some college, no degree", "Associate", "Bachelors",
+                                    "Masters", "Doctorate/Professional"))
+
+# Plot
+edu_plot <- ggplot(edu_data, aes(x = estimate, y = level)) +
+  geom_point(size = 3, color = "#C0641E") +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), orientation = "y", width = 0.2) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
+  scale_x_log10() +
+  facet_wrap(~ parent, scales = "free_x") +
+  labs(x = "Adjusted Odds Ratio (log scale)", y = NULL,
+       title = "Adjusted Odds Ratios for Preterm Birth by Parental Education") +
+  theme_minimal()
+
+edu_plot
+
+ggsave("Figures/education_forest.png", edu_plot, width = 12, height = 6, dpi = 150)
 # =========================================================
 # Model diagnostics
 # =========================================================
@@ -313,13 +354,15 @@ vif(preterm_adjusted_model)
 vif(adj_1)
 vif(edu_m)
 
-# sensitivity analysis
+
+
+#sensitivity analysis
 sens_model <- run_logit(
   "preterm",
   c("MAGER", "MRACEHISP", "MEDUC", "FEDUC", "PRECARE5"),
   analysis_data
 )
-# check odds ratios
+
 coef(sens_model) %>% exp()
 
 # save images
