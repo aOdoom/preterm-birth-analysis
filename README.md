@@ -48,7 +48,7 @@ Maternal age had the highest odds among mothers aged 45–50 (OR: 2.51). Black m
 
 ## Discussion
 
-Both maternal and paternal education independently predicted preterm birth, with higher education associated with lower odds of preterm birth. Paternal education was also a predictor as maternal education, a finding that stands out given the research emphasis on mothers. This suggests that socioeconomic factors are relevant to preterm birth risk.
+Both maternal and paternal education independently predicted preterm birth, with higher education associated with lower odds of preterm birth. Paternal education was also a predictor, which stands out given the research emphasis on mothers. This suggests that socioeconomic factors such as education are relevant to preterm birth risk.
 
 The stability of education estimates across sequential models strengthens this conclusion. The association at higher education levels changed slightly as covariates were added, indicating it is not simply explained by age, race, or prenatal care.
 
