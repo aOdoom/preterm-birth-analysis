@@ -6,7 +6,7 @@ Preterm birth, defined as delivery before 37 weeks of gestation, is a leading ca
 
 Parental education is a well-established social determinant of birth outcomes, but research has focused overwhelmingly on maternal education, with paternal education rarely examined. Prior work suggests paternal education may be an important additional marker of risk for preterm birth, reflecting social and economic factors not captured by maternal education or family income [2]. However, findings on whether maternal and paternal education have differential effects remain mixed; one large birth cohort found maternal education more strongly associated with adverse outcomes than paternal, though both associations were weaker than previously reported [3]. This analysis compares how maternal and paternal education predict preterm birth in the United States, using 2024 national birth certificate data.
 
-**Research question:** How do maternal and paternal education compare as predictors of preterm birth, after adjusting for maternal age, race/ethnicity, and prenatal care?
+**Research question:** *How do maternal and paternal education compare as predictors of preterm birth, after adjusting for maternal age, race/ethnicity, and prenatal care?*
 
 ## Methods
 
