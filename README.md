@@ -18,7 +18,7 @@ Data were prepared in SQL and analyzed in R. Associations between each predictor
 
 The dataset included approximately 2.9 million singleton births. Figure 1 shows preterm rates across variables. Table 1 shows characteristics by preterm status. Table 2 shows unadjusted and adjusted odds ratios for all predictors. To examine education associations more closely, sequential models were fit by adding covariates in stages (Table 3). 
 
-Higher education was associated with lower odds of preterm birth for both maternal and paternal education. After adjustment, paternal education showed a slightly stronger association than maternal education at every degree level. A paternal bachelor's degree was associated with 22% lower odds of preterm birth (OR: 0.78), compared with 16% lower for a maternal bachelor's degree (OR: 0.84). The protective association was similar for master's and doctoral degrees.
+Higher education was associated with lower odds of preterm birth for both maternal and paternal education. After adjustment, paternal education showed a slightly stronger association than maternal education at every degree level. A paternal bachelor's degree was associated with 22% lower odds of preterm birth (OR: 0.78), compared with 20% lower for a maternal bachelor's degree (OR: 0.80). The protective association was similar for master's and doctoral degrees.
 
 Education estimates were stable across the sequential models (Table 3). Adding age, race/ethnicity, and prenatal care did not change the odds ratios for the higher education levels, which indicates that education is mostly independent of these factors. 
 
