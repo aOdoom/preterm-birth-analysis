@@ -10,21 +10,21 @@ Parental education is a well-established social determinant of birth outcomes, b
 
 ## Methods
 
-Birth records were drawn from the 2024 National Vital Statistics System (NVSS) natality file and restricted to singleton births. The outcome was preterm birth, defined as delivery before 37 weeks of gestation. The primary exposures were maternal and paternal educational attainment, each ranging from eighth grade or less to a doctorate or professional degree, with high school graduate as the reference category. Maternal age, race/ethnicity, and month prenatal care began were included as covariates.
+Birth records were downloaded from the 2024 National Vital Statistics System (NVSS) natality file and restricted to singleton births. The outcome was preterm birth, defined as delivery before 37 weeks of gestation. The primary exposures were maternal and paternal educational level, each ranging from eighth grade or less to a doctorate or professional degree, with high school graduate as the reference category. Maternal age, race/ethnicity, and month prenatal care began were included as covariates.
 
-Data were prepared in SQL and analyzed in R. Associations between each predictor and preterm birth were estimated using logistic regression, reported as odds ratios with 95% confidence intervals. To evaluate the independent contribution of parental education, models were fit sequentially, beginning with education alone and adding demographic and prenatal care covariates in turn. Multicollinearity was evaluated using variance inflation factors, and model fit was compared using the Akaike Information Criterion. The primary analysis was restricted to complete cases (N ≈ 2.9 million); a sensitivity analysis retaining missing values produced consistent results.
+Data were prepared in SQL and analyzed in R. Associations between each predictor and preterm birth were estimated using logistic regression, reported as odds ratios with 95% confidence intervals. To evaluate the independent contribution of parental education, models were fit sequentially. Model 1 included both maternal and paternal education. Model 2 added age and race. Model 3 added when prenatal care began, creating the full model. Multicollinearity was evaluated using variance inflation factors, and model fit was compared using the Akaike Information Criterion (AIC). The primary analysis was restricted to complete cases (N ≈ 2.9 million) and a sensitivity analysis retaining missing values produced consistent results.
 
 ## Results
 
-The analytic sample included approximately 2.9 million singleton births. Table 1 shows sample characteristics by preterm status.
+The dataset included approximately 2.9 million singleton births. Table 1 shows characteristics by preterm status. Table 2 shows unadjusted and adjusted odds ratios for all predictors. To examine education associations more closely, sequential models were fit by adding covariates in stages. 
 
-**Parental education.** Higher education was associated with lower odds of preterm birth for both maternal and paternal education. After adjustment, paternal education showed a slightly stronger association than maternal education at every degree level. A paternal bachelor's degree was associated with 22% lower odds of preterm birth (OR 0.78), compared with 16% lower for a maternal bachelor's degree (OR 0.84). The protective association plateaued at the bachelor's level for both parents, with the association similar for master's and doctoral degrees.
+Higher education was associated with lower odds of preterm birth for both maternal and paternal education. After adjustment, paternal education showed a slightly stronger association than maternal education at every degree level. A paternal bachelor's degree was associated with 22% lower odds of preterm birth (OR: 0.78), compared with 16% lower for a maternal bachelor's degree (OR: 0.84). The protective association was similar for master's and doctoral degrees.
 
-**Stability across models.** Education estimates were stable across the sequential models (Table 3). Adding age, race/ethnicity, and prenatal care did not change the odds ratios for the higher education levels, indicating that education is mostly independent of these factors. The higher odds for the lowest category (8th grade or less) in the smaller models were either null or close to null in the fully adjusted model, indicating that association could be explained by differences in age, race/ethnicity, and prenatal care across education groups.
+Education estimates were stable across the sequential models (Table 3). Adding age, race/ethnicity, and prenatal care did not change the odds ratios for the higher education levels, which indicates that education is mostly independent of these factors. 
 
-**Model diagnostics.** Variance inflation factors were within limits (adjusted GVIF < 1.2 for all variables), indicating that despite moderate correlation between maternal and paternal education, both could be reliably estimated in the same model. Model fit improved slightly with each set of covariates (AIC: 1,876,756 for education alone; 1,858,596 for the full model).
+Variance inflation factors (VIFs) were within limits (a VIF between 1 to 5 is generally acceptable), indicating that despite moderate correlation between maternal and paternal education, both could be reliably estimated in the same model. Model fit improved slightly with each set of covariates (AIC: 1,876,756 for education alone and 1,858,596 for the full model).
 
-**Covariates.** Maternal age had the highest odds among mothers aged 45–50 (OR 2.51). Black mothers had 51% higher adjusted odds of preterm birth than White mothers (OR 1.51). Table 2 shows full unadjusted and adjusted results.
+Maternal age had the highest odds among mothers aged 45–50 (OR: 2.51). Black mothers had 51% higher adjusted odds of preterm birth than White mothers (OR: 1.51). Table 2 shows full unadjusted and adjusted results.
 
 ### Table 1. Sample Characteristics by Preterm Status
 
@@ -48,19 +48,21 @@ The analytic sample included approximately 2.9 million singleton births. Table 1
 
 ## Discussion
 
-Both maternal and paternal education independently predicted preterm birth, with higher education associated with lower odds. Notably, paternal education was at least as strong a predictor as maternal education, a finding that stands out given the research emphasis on mothers. This suggests household-level socioeconomic factors, not just maternal characteristics, are relevant to preterm birth risk.
+Both maternal and paternal education independently predicted preterm birth, with higher education associated with lower odds of preterm birth. Paternal education was also a predictor as maternal education, a finding that stands out given the research emphasis on mothers. This suggests that socioeconomic factors are relevant to preterm birth risk.
 
-The stability of education estimates across sequential models strengthens this conclusion, as the protective association at higher education levels changed little as covariates were added, indicating it is not simply explained by age, race, or prenatal care.
+The stability of education estimates across sequential models strengthens this conclusion. The protective association at higher education levels changed slightly as covariates were added, indicating it is not simply explained by age, race, or prenatal care.
 
-**Limitations.** Birth certificate data lacks information on income, insurance, neighborhood, and stress, all likely confounders, so residual confounding remains and results should not be interpreted as causal. Paternal education was missing for a notable share of records, though sensitivity analyses suggested findings were robust to this. Finally, with a sample this large, nearly all associations were statistically significant, so interpretation should focus on effect size rather than p-values.
+## Limitations 
+
+Birth certificate data lacks information on income, insurance, and neighborhood location, which are all likely confounders. Results should not be interpreted as causal. Although paternal education was unknown for approximately 18% of records, a sensitivity analysis suggested findings were robust to this. Due to the size of the data (~2.9M+ observations), nearly all associations were statistically significant. Interpretation of results should focus on effect size rather than p-values.
 
 ## Conclusion
 
-Both maternal and paternal education were independent predictors of preterm birth, with paternal education showing an association at least as strong as maternal education. These findings suggest that paternal and household-level factors deserve greater attention in research on birth outcomes, which has traditionally focused on mothers. While the analysis cannot establish causation, it highlights parental education as a marker of preterm birth risk worth further study with more socioeconomic data.
+Maternal and paternal education were independent predictors of preterm birth, with paternal education showing an association similar to maternal education. These findings suggest that research should also incorporate paternal factors as potential predictors. While the analysis cannot establish causation, it highlights parental education as a marker of preterm birth risk that denotes further study with additional socioeconomic variables.
 
 ## Tools Used
 
-SQL, R (dplyr, ggplot2, gtsummary, broom)
+SQLite, R (dplyr, ggplot2, gtsummary, broom)
 
 ## Data Source
 
