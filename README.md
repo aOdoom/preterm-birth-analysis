@@ -44,7 +44,7 @@ Maternal age had the highest odds among mothers aged 45–50 (OR: 2.51). Black m
 
 ### Figure 2. Adjusted Odds Ratios for Preterm Birth by Parental Education
 
-![Figure 2](images/education_forest.png)
+![Figure 2](images/education_forest_plot.png)
 
 ## Discussion
 
