@@ -253,20 +253,20 @@ run_logit <- function(outcome, predictors, data) {
 # predictors
 predictors <- c("MAGER", "MRACEHISP", "MEDUC", "FEDUC", "PRECARE5")
 
-# unadjusted models
+# unadjusted models - table 2
 age_m <- run_logit("preterm", "MAGER", analysis_data_complete)
 race_m <- run_logit("preterm", "MRACEHISP", analysis_data_complete)
 meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
 feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
 care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
 
-# sequential model 1
+# table 3: sequential model 1
 edu_m <- run_logit("preterm", c("MEDUC", "FEDUC"), analysis_data_complete)
 
-# sequential model 2 - age/race
+# table 3: sequential model 2 - age/race
 adj_1 <- run_logit("preterm", c("MEDUC", "FEDUC", "MAGER", "MRACEHISP"), analysis_data_complete)
 
-# sequential model 3 - adding month prenatal care began
+# table 3: sequential model 3 - adding month prenatal care began
 preterm_adjusted_model <- run_logit("preterm", predictors, analysis_data_complete)
 
 # create tables
