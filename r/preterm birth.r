@@ -254,18 +254,19 @@ run_logit <- function(outcome, predictors, data) {
 predictors <- c("MAGER", "MRACEHISP", "MEDUC", "FEDUC", "PRECARE5")
 
 # unadjusted models
-# age_m <- run_logit("preterm", "MAGER", analysis_data_complete)
-# race_m <- run_logit("preterm", "MRACEHISP", analysis_data_complete)
-# meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
-# feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
-# care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
+age_m <- run_logit("preterm", "MAGER", analysis_data_complete)
+race_m <- run_logit("preterm", "MRACEHISP", analysis_data_complete)
+meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
+feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
+care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
 
+# sequential model 1
 edu_m <- run_logit("preterm", c("MEDUC", "FEDUC"), analysis_data_complete)
 
-# additional variables - age/race
+# sequential model 2 - age/race
 adj_1 <- run_logit("preterm", c("MEDUC", "FEDUC", "MAGER", "MRACEHISP"), analysis_data_complete)
 
-# fully adjusted model
+# sequential model 3 - adding month prenatal care began
 preterm_adjusted_model <- run_logit("preterm", predictors, analysis_data_complete)
 
 # create tables
@@ -296,25 +297,18 @@ t3 <- tbl_regression(
 # full table
 seq_table <- tbl_merge(
   list(t1, t2, t3),
-  tab_spanner = c("**Model 1: Education Only**", "**Model 2: +Race and Age**", "**Model 3: Fully Adjusted**")
+  tab_spanner = c("**Model 1**", "**Model 2**", "**Model 3**")
 ) %>%
   modify_caption("**Table 3. Education Odds Ratios Across Sequential Models**")
 
-
-
+# save table
 seq_table %>%
   as_flex_table() %>%
   bg(bg = "white", part = "all") %>%
   save_as_image(path = "Figures/table3_sequential.png")
-
-
 # =========================================================
-# Forest Plot
+# Forest Plot - Education 
 # =========================================================
-library(broom)
-library(dplyr)
-library(ggplot2)
-
 # Extract education terms
 edu_data <- tidy(preterm_adjusted_model, exponentiate = TRUE, conf.int = TRUE) %>%
   filter(grepl("MEDUC|FEDUC", term)) %>%
@@ -340,8 +334,10 @@ edu_plot <- ggplot(edu_data, aes(x = estimate, y = level)) +
        title = "Adjusted Odds Ratios for Preterm Birth by Parental Education") +
   theme_minimal()
 
+# view
 edu_plot
 
+# save
 ggsave("Figures/education_forest.png", edu_plot, width = 12, height = 6, dpi = 150)
 # =========================================================
 # Model diagnostics
@@ -353,8 +349,6 @@ broom::glance(edu_m)
 vif(preterm_adjusted_model)
 vif(adj_1)
 vif(edu_m)
-
-
 
 #sensitivity analysis
 sens_model <- run_logit(
