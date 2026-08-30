@@ -260,6 +260,36 @@ meduc_m <- run_logit("preterm", "MEDUC", analysis_data_complete)
 feduc_m <- run_logit("preterm", "FEDUC", analysis_data_complete)
 care_m <- run_logit("preterm", "PRECARE5", analysis_data_complete)
 
+# Shared labels
+lbls <- list(
+  MAGER = "Maternal Age",
+  MRACEHISP = "Race/Ethnicity",
+  MEDUC = "Maternal Education",
+  FEDUC = "Paternal Education",
+  PRECARE5 = "Month Prenatal Care Began"
+)
+
+# Unadjusted tables
+u_age   <- tbl_regression(age_m, exponentiate = TRUE, label = lbls) %>% modify_header(estimate = "**OR**")
+u_race  <- tbl_regression(race_m, exponentiate = TRUE, label = lbls) %>% modify_header(estimate = "**OR**")
+u_meduc <- tbl_regression(meduc_m, exponentiate = TRUE, label = lbls) %>% modify_header(estimate = "**OR**")
+u_feduc <- tbl_regression(feduc_m, exponentiate = TRUE, label = lbls) %>% modify_header(estimate = "**OR**")
+u_care  <- tbl_regression(care_m, exponentiate = TRUE, label = lbls) %>% modify_header(estimate = "**OR**")
+
+# Stack into one unadjusted table
+t_unadjusted <- tbl_stack(list(u_age, u_race, u_meduc, u_feduc, u_care))
+
+# Adjusted table (full model, all variables)
+t_adjusted <- tbl_regression(preterm_adjusted_model, exponentiate = TRUE, label = lbls) %>%
+  modify_header(estimate = "**OR**")
+
+# Merge unadjusted + adjusted side by side
+merged_table <- tbl_merge(
+  list(t_unadjusted, t_adjusted),
+  tab_spanner = c("**Unadjusted**", "**Adjusted**")
+) %>%
+  modify_caption("**Table 2. Unadjusted and Adjusted Odds Ratios for Preterm Birth**")
+
 # table 3: sequential model 1
 edu_m <- run_logit("preterm", c("MEDUC", "FEDUC"), analysis_data_complete)
 
