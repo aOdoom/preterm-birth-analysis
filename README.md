@@ -48,9 +48,7 @@ Maternal age had the highest odds among mothers aged 45–50 (OR: 2.51). Black m
 
 ## Discussion
 
-Both maternal and paternal education independently predicted preterm birth, with higher education associated with lower odds of preterm birth. Paternal education was also a predictor, which stands out given the research emphasis on mothers. This suggests that socioeconomic factors such as education are relevant to preterm birth risk.
-
-The stability of education estimates across sequential models strengthens this conclusion. The association at higher education levels changed slightly as covariates were added, indicating it is not simply explained by age, race, or prenatal care.
+Both maternal and paternal education independently predicted preterm birth, with higher education associated with lower odds. Paternal education remaining a predictor is notable given how prior research has focused on mothers, and it suggests that household socioeconomic factors, not maternal characteristics alone, are relevant to preterm birth risk. These associations remained after adjustment for demographic and prenatal care covariates, indicating that higher parental education is independently associated with lower odds of preterm birth.
 
 ## Limitations 
 
@@ -58,7 +56,7 @@ Birth certificate data lacks information on income, insurance, and neighborhood 
 
 ## Conclusion
 
-Maternal and paternal education were independent predictors of preterm birth, with paternal education showing an association similar to maternal education. These findings suggest that research should also incorporate paternal factors as potential predictors. While the analysis cannot establish causation, it highlights parental education as a marker of preterm birth risk that denotes further study with additional socioeconomic variables.
+Maternal and paternal education were independent predictors of preterm birth, with paternal education showing an association similar to maternal education. These findings suggest that research should also incorporate paternal factors as potential predictors. While the analysis cannot establish causation, it highlights parental education as a marker of preterm birth risk. In the future, further study with additional socioeconomic variables can help strengthen these analyses.
 
 ## Tools Used
 
